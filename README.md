@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?logo=windows&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-5391FE?logo=powershell&logoColor=white)
-![Version](https://img.shields.io/badge/version-v0.1.1-orange)
+![Version](https://img.shields.io/badge/version-v0.1.2-orange)
 ![Last commit](https://img.shields.io/github/last-commit/xm2284/XiaomingCampusNetToolkit)
 [![Hits](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit.svg)](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit)
 
@@ -49,7 +49,7 @@
 
 **方式一（推荐）：下载单个 exe**
 
-1. 到 [Releases](../../releases) 下载最新的 `Start-Xiaoming-Toolkit.exe`；
+1. 到 [Releases](../../releases) 下载最新的 `XiaomingCampusNetToolkit.exe`；
 2. 直接双击运行（会自动弹 UAC 提权）；
 3. 首次运行阅读免责声明，按菜单数字选择功能即可。
 
@@ -77,6 +77,8 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 | `6` | 设置 / 关于 | 开关匿名统计、打开数据目录、作者 QQ |
 | `0` | 退出 | |
 
+> slogan：「**我与我周旋久，宁做我**」
+
 ## 优化前后对比
 
 工具会在每次优化后自动对比网关延迟。真实测试示例（某校园网 Wi-Fi）：
@@ -95,6 +97,12 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 - 数据存放在你自己的 `%LOCALAPPDATA%\XiaomingToolkit\`，备份 / 日志 / 报告都在本地。
 
 ## 更新日志
+
+### v0.1.2
+- 🔗 重启网卡后**确认真正 ping 通网关**（连续 2 包成功）才开始复测，不再把"刚重连的抖动"误报成延迟上升
+- ❓ 测速询问只认 `Y/N`，乱输入会重新问，不再闷头执行
+- 🎨 菜单更简洁（去掉括号说明），副标题改为「我与我周旋久，宁做我」
+- 📦 单文件改名为 `XiaomingCampusNetToolkit.exe`
 
 ### v0.1.1
 - ⚡ 新增**快速 / 完整双模式**：赶时间输 N 约 10 秒，看效果输 Y 完整前后对比
@@ -145,10 +153,10 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 ```
 XiaomingCampusNetToolkit/
 ├─ src/
-│  └─ XiaomingToolkit.ps1      # 主程序（全部功能 + 测试模式）
-├─ Start-Xiaoming-Toolkit.exe   # 单文件版（Release 提供，双击即用）
-├─ Start-Xiaoming-Toolkit.bat   # 脚本启动器（需连同 src 一起）
-├─ stats-server/              # 可选的匿名统计后端（Docker）
+│  └─ XiaomingToolkit.ps1          # 主程序（全部功能 + 测试模式）
+├─ XiaomingCampusNetToolkit.exe    # 单文件版（Release 提供，双击即用）
+├─ Start-Xiaoming-Toolkit.bat      # 脚本启动器（需连同 src 一起）
+├─ stats-server/                  # 可选的匿名统计后端（Docker）
 ├─ README.md
 ├─ LICENSE
 └─ .gitignore

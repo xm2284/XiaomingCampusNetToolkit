@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "SilentlyContinue"
 
 # ---------- 常量 ----------
-$Script:Version   = "0.1.1"
+$Script:Version   = "0.1.2"
 $Script:AppName   = "XiaomingToolkit"
 $Script:DataRoot  = Join-Path $env:LOCALAPPDATA $Script:AppName
 $Script:BackupDir = Join-Path $Script:DataRoot "backups"
@@ -111,7 +111,7 @@ function Show-Banner {
     Write-Host "  ║                                              ║" -ForegroundColor Cyan
     Write-Host "  ╚══════════════════════════════════════════════╝" -ForegroundColor Cyan
     Write-Host "     作者 小明   QQ: 2284517861" -ForegroundColor Yellow
-    Write-Host ("     v{0}   纯本地 · 自动备份 · 一键还原 · 免费开源" -f $Script:Version) -ForegroundColor Gray
+    Write-Host "     「我与我周旋久，宁做我」" -ForegroundColor DarkCyan
     Write-Host ""
 }
 
@@ -498,14 +498,23 @@ function Set-XmAdapterGoal {
 
 # ---------- 优化主流程：备份 -> 基线 -> 优化 -> 重启网卡 -> 复测对比 ----------
 function Wait-XmNetReady {
-    param([int]$Timeout=15)
+    param([int]$Timeout=25)
     for($t=1;$t -le $Timeout;$t++){
         Start-Sleep -Seconds 1
         $up = Get-NetAdapter -Physical | Where-Object { $_.Status -eq "Up" -and $_.LinkSpeed }
-        if($up){ Write-Host "`r$(' '*34)`r" -NoNewline; return $true }
-        Write-Host ("`r  等待 Wi-Fi 重连... {0}s / {1}s   " -f $t,$Timeout) -NoNewline
+        if($up){
+            $gw = Get-XmGateway
+            $ok = 0
+            for($k=0;$k -lt 5;$k++){
+                $p = Test-XmPing -Addr $gw -Count 1
+                if($p.Recv -ge 1){ $ok++; if($ok -ge 2){ break } }
+                Start-Sleep -Milliseconds 600
+            }
+            if($ok -ge 2){ Write-Host "`r$(' '*36)`r" -NoNewline; return $true }
+        }
+        Write-Host ("`r  等待网络就绪... {0}s / {1}s   " -f $t,$Timeout) -NoNewline
     }
-    Write-Host "`r$(' '*34)`r" -NoNewline
+    Write-Host "`r$(' '*36)`r" -NoNewline
     return $false
 }
 
@@ -618,9 +627,9 @@ function Show-Menu {
         Clear-Host
         Show-Banner
         Write-Host "  ╔══════════════════════════════════════════════╗" -ForegroundColor Cyan
-        Show-MenuLine "1" "一键修代理（重启后打不开网页）"
-        Show-MenuLine "2" "校园网优化（N=快速约10秒 / Y=完整对比）"
-        Show-MenuLine "3" "游戏优化（保守安全）"
+        Show-MenuLine "1" "一键修代理"
+        Show-MenuLine "2" "校园网优化"
+        Show-MenuLine "3" "游戏优化"
         Show-MenuLine "4" "测延迟 / 看网络状态"
         Show-MenuLine "5" "备份与恢复"
         Show-MenuLine "6" "设置 / 关于"

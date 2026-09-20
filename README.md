@@ -89,6 +89,14 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 
 <div align="center">
 
+**真实用户数据（实时）：**
+
+![总调用](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Ftotal)
+![用户数](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fusers)
+![延迟下降](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fimprove)
+![成功率](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fsuccess)
+
+
 ![每日调用趋势](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage)
 
 </div>

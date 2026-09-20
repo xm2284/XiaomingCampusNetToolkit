@@ -140,15 +140,27 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 
 ## 在线统计看板
 
-本项目自带一个极简匿名统计后端（Flask + SQLite + Docker），在线看板：<http://47.98.204.220/>
+本项目自带一个匿名统计后端（Flask + SQLite + Docker）。
 
-静态图（供本 README 嵌入 / 其它项目引用）：
+**📊 完整实时看板：<http://47.98.204.220/>**
 
-- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage` 每日调用
-- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dvendor` 网卡厂商
-- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dmode` 使用模式
-- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dos` 系统版本
-- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dlatency` 延迟前后
+<div align="center">
+
+| 每日调用 | 网卡厂商 |
+|:---:|:---:|
+| ![每日调用](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage) | ![网卡厂商](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dvendor) |
+
+| 使用模式 | 系统版本 |
+|:---:|:---:|
+| ![使用模式](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dmode) | ![系统版本](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dos) |
+
+| 延迟前后对比 |
+|:---:|
+| ![延迟前后对比](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dlatency) |
+
+</div>
+
+> 上图通过 https 代理实时拉取（约 5 分钟缓存）；点上方链接看完整交互看板。
 
 自部署方法见 [`stats-server/README.md`](stats-server/README.md)。
 

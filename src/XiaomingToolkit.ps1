@@ -373,7 +373,7 @@ function Test-XmPing {
         elseif($o -match "TTL="){ $ms=0 }
         if($null -ne $ms){ $times+=$ms }
         if($ShowProgress){
-            $done=[int](24*$i/$Count); $bar=("█"*$done)+("░"*(24-$done))
+            $done=[int](24*$i/$Count); $bar=("#"*$done)+("-"*(24-$done))
             $eta = [math]::Max(0,($Count-$i))
             Write-Host ("`r  [{0}] {1}/{2}  预计剩余 {3} 秒   " -f $bar,$i,$Count,$eta) -NoNewline
             Start-Sleep -Milliseconds 150

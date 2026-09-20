@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?logo=windows&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-5391FE?logo=powershell&logoColor=white)
-![Version](https://img.shields.io/badge/version-v0.1.3-orange)
+![Version](https://img.shields.io/badge/version-v0.1.4-orange)
 ![Last commit](https://img.shields.io/github/last-commit/xm2284/XiaomingCampusNetToolkit)
 [![Hits](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit.svg)](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit)
 
@@ -83,9 +83,9 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 
 工具会在每次优化后自动对比网关延迟。真实测试示例（某校园网 Wi-Fi）：
 
-![延迟对比](http://47.98.204.220/chart?type=latency)
+![延迟对比](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dlatency)
 
-![每日调用趋势](http://47.98.204.220/chart?type=usage)
+![每日调用趋势](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage)
 
 > 延迟受网络波动影响，结果仅供参考；如不满意，菜单选 `[7]` 立即还原。
 
@@ -144,11 +144,11 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 
 静态图（供本 README 嵌入 / 其它项目引用）：
 
-- `http://47.98.204.220/chart?type=usage` 每日调用
-- `http://47.98.204.220/chart?type=vendor` 网卡厂商
-- `http://47.98.204.220/chart?type=mode` 使用模式
-- `http://47.98.204.220/chart?type=os` 系统版本
-- `http://47.98.204.220/chart?type=latency` 延迟前后
+- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage` 每日调用
+- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dvendor` 网卡厂商
+- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dmode` 使用模式
+- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dos` 系统版本
+- `https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dlatency` 延迟前后
 
 自部署方法见 [`stats-server/README.md`](stats-server/README.md)。
 

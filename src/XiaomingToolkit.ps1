@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "SilentlyContinue"
 
 # ---------- 常量 ----------
-$Script:Version   = "0.1.3"
+$Script:Version   = "0.1.4"
 $Script:AppName   = "XiaomingToolkit"
 $Script:DataRoot  = Join-Path $env:LOCALAPPDATA $Script:AppName
 $Script:BackupDir = Join-Path $Script:DataRoot "backups"

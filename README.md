@@ -79,15 +79,17 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 
 > slogan：「**我与我周旋久，宁做我**」
 
-## 优化前后对比
+## 实时使用情况
 
-工具会在每次优化后自动对比网关延迟。真实测试示例（某校园网 Wi-Fi）：
+下面是来自真实用户匿名上报的**实时统计**（每次打开本页自动刷新）：
 
-![延迟对比](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dlatency)
+<div align="center">
 
 ![每日调用趋势](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage)
 
-> 延迟受网络波动影响，结果仅供参考；如不满意，菜单选 `[7]` 立即还原。
+</div>
+
+> 工具每次优化前自动备份，如不满意菜单选 `[5]` 一键还原。
 
 ## 隐私与安全
 
@@ -154,9 +156,6 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 |:---:|:---:|
 | ![使用模式](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dmode) | ![系统版本](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dos) |
 
-| 延迟前后对比 |
-|:---:|
-| ![延迟前后对比](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dlatency) |
 
 </div>
 

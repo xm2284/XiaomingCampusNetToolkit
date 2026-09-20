@@ -517,8 +517,13 @@ function Invoke-XmOptimization {
     Write-Host ""
     Write-Host "  ==== 进入 $pName 优化模式 ====" -ForegroundColor Cyan
 
-    $ans = Read-Host "`n  要测速对比吗？(Y=完整对比约50秒 / N=快速完成约10秒)"
-    $doLatency = -not ($ans -match "^[nN]")
+    $doLatency = $true
+    do {
+        $ans = (Read-Host "`n  要测速对比吗？(Y=完整对比约50秒 / N=快速完成约10秒)").Trim()
+        if($ans -match "^[nN否]"){ $doLatency=$false; break }
+        if($ans -match "^[yY是]"){ $doLatency=$true; break }
+        Write-Host "  请只输入 Y 或 N（Y=完整测速 / N=快速）" -ForegroundColor Red
+    } while($true)
     if($doLatency){ Write-Host "`n  完整模式：将测优化前后延迟（约 50 秒）" -ForegroundColor Gray }
     else          { Write-Host "`n  快速模式：跳过测速，约 10 秒完成" -ForegroundColor Green }
 
@@ -557,7 +562,8 @@ function Invoke-XmOptimization {
         Restart-NetAdapter -Name $ad.Name -Confirm:$false -ErrorAction SilentlyContinue
     }
     Wait-XmNetReady -Timeout 15
-    Write-Host "  网卡已重连。" -ForegroundColor Green
+    Write-Host "  网卡已重连，等待网络稳定 3 秒..." -ForegroundColor Green
+    Start-Sleep -Seconds 3
 
     $after=$null; $gb=$null; $ga=$null
     if($doLatency){
@@ -569,9 +575,15 @@ function Invoke-XmOptimization {
         Write-Host "  ------------------------------------------------------------" -ForegroundColor Cyan
         if($gb -and $ga){
             $delta=[math]::Round($ga-$gb,1)
-            $pct=if($gb){[math]::Round(100*($gb-$ga)/$gb,1)}else{0}
-            $arrow=if($delta -le 0){"下降"}else{"上升"}
-            Write-Host ("  网关延迟: {0} ms -> {1} ms  ({2} {3} ms / {4:0.##}%)" -f $gb,$ga,$arrow,[math]::Abs($delta),$pct) -ForegroundColor Green
+            if($delta -gt [math]::Max(5, $gb)){
+                Write-Host ("  网关延迟: {0} ms -> {1} ms" -f $gb,$ga) -ForegroundColor Yellow
+                Write-Host "  ↑ 刚重启网卡，Wi-Fi 还在稳定，这个数偏高属正常，不是变卡。" -ForegroundColor Yellow
+                Write-Host "    建议过 1 分钟后在菜单 [4] 再测一次看真实效果。" -ForegroundColor Gray
+            } else {
+                $pct=if($gb){[math]::Round(100*($gb-$ga)/$gb,1)}else{0}
+                $arrow=if($delta -le 0){"下降"}else{"上升"}
+                Write-Host ("  网关延迟: {0} ms -> {1} ms  ({2} {3} ms / {4:0.##}%)" -f $gb,$ga,$arrow,[math]::Abs($delta),$pct) -ForegroundColor Green
+            }
         }
     }
     Write-Host "`n  完成！如不满意可在菜单选 [5] 从备份恢复。" -ForegroundColor Green

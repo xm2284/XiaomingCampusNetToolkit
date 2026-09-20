@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "SilentlyContinue"
 
 # ---------- 常量 ----------
-$Script:Version   = "0.1.2"
+$Script:Version   = "0.1.3"
 $Script:AppName   = "XiaomingToolkit"
 $Script:DataRoot  = Join-Path $env:LOCALAPPDATA $Script:AppName
 $Script:BackupDir = Join-Path $Script:DataRoot "backups"
@@ -101,6 +101,26 @@ function Save-XmConfig {
     param($Config)
     $Config | ConvertTo-Json -Depth 5 | Set-Content -Path $Script:ConfigPath -Encoding UTF8
 }
+function New-XmDesktopShortcut {
+    $exe = $null
+    try { $exe = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName } catch {}
+    if(-not $exe -or $exe -notlike "*.exe" -or $exe -like "*powershell*"){ return }
+    $desktop = [Environment]::GetFolderPath("Desktop")
+    if(-not $desktop){ return }
+    $lnk = Join-Path $desktop "小明校园网加速工具箱.lnk"
+    if(Test-Path $lnk){ return }
+    try {
+        $ws = New-Object -ComObject WScript.Shell
+        $s = $ws.CreateShortcut($lnk)
+        $s.TargetPath = $exe
+        $s.WorkingDirectory = Split-Path $exe
+        $s.Description = "小明校园网加速工具箱"
+        $s.Save()
+        Write-Host "  [首次运行] 已在桌面创建快捷方式" -ForegroundColor Green
+        Start-Sleep -Milliseconds 600
+    } catch {}
+}
+
 function Show-Banner {
     $Host.UI.RawUI.WindowTitle = "「小明」校园网加速工具箱  v$($Script:Version)"
     Write-Host ""

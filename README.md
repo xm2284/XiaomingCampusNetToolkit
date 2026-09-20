@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?logo=windows&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-5391FE?logo=powershell&logoColor=white)
-![Version](https://img.shields.io/badge/version-v0.1.2-orange)
+![Version](https://img.shields.io/badge/version-v0.1.3-orange)
 ![Last commit](https://img.shields.io/github/last-commit/xm2284/XiaomingCampusNetToolkit)
 [![Hits](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit.svg)](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit)
 
@@ -97,6 +97,10 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 - 数据存放在你自己的 `%LOCALAPPDATA%\XiaomingToolkit\`，备份 / 日志 / 报告都在本地。
 
 ## 更新日志
+
+### v0.1.3
+- 🎨 新增软件图标（青蓝 WiFi + 闪电），exe 自带图标
+- 🖥️ 首次运行自动在桌面创建「小明校园网加速工具箱」快捷方式，之后不再重复
 
 ### v0.1.2
 - 🔗 重启网卡后**确认真正 ping 通网关**（连续 2 包成功）才开始复测，不再把"刚重连的抖动"误报成延迟上升

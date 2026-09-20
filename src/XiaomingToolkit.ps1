@@ -102,14 +102,16 @@ function Save-XmConfig {
     $Config | ConvertTo-Json -Depth 5 | Set-Content -Path $Script:ConfigPath -Encoding UTF8
 }
 function Show-Banner {
+    $Host.UI.RawUI.WindowTitle = "「小明」校园网加速工具箱  v$($Script:Version)"
     Write-Host ""
-    Write-Host "     ___  __           __  __                   ____        __             " -ForegroundColor Cyan
-    Write-Host "    /   |/ /___ ______/ /_/ /_  ____ ___  ___  / __/_  ______/ /_____  _____ " -ForegroundColor Cyan
-    Write-Host "   / /| |/ __/ `/ ___/ __/ __ \/ __ `__ \/ _ \/ /_/ / / / __  / __/ _ \/ ___/" -ForegroundColor Cyan
-    Write-Host "  / ___ / /_/ (__  ) /_/ / / / / / / / / /  __/ __/ /_/ / /_/ / /_/  __/ /    " -ForegroundColor Cyan
-    Write-Host " /_/  |_\__/_/ /_/\__/_/ /_/_/ /_/ /_/\___/_/  \__,_/\__,_/\__/\___/_/     " -ForegroundColor Cyan
-    Write-Host "        作者: 小明   QQ: 2284517861" -ForegroundColor DarkGray
-    Write-Host ("        v{0}   纯本地运行 · 自动备份 · 一键还原" -f $Script:Version) -ForegroundColor DarkGray
+    Write-Host "  ╔══════════════════════════════════════════════╗" -ForegroundColor Cyan
+    Write-Host "  ║                                              ║" -ForegroundColor Cyan
+    Write-Host "  ║      「 小 明 」校园 网 加 速 工 具箱        ║" -ForegroundColor White
+    Write-Host "  ║      XIAOMING CAMPUS NETWORK TOOLKIT         ║" -ForegroundColor DarkCyan
+    Write-Host "  ║                                              ║" -ForegroundColor Cyan
+    Write-Host "  ╚══════════════════════════════════════════════╝" -ForegroundColor Cyan
+    Write-Host "     作者 小明   QQ: 2284517861" -ForegroundColor Yellow
+    Write-Host ("     v{0}   纯本地 · 自动备份 · 一键还原 · 免费开源" -f $Script:Version) -ForegroundColor Gray
     Write-Host ""
 }
 
@@ -581,22 +583,40 @@ function Invoke-XmOptimization {
 }
 
 # ---------- 菜单 ----------
+function Show-MenuLine {
+    param([string]$Num,[string]$Label)
+    Write-Host "  ║ " -NoNewline -ForegroundColor Cyan
+    Write-Host ("[{0}]" -f $Num) -NoNewline -ForegroundColor Yellow
+    # 框内宽46：数字3 + 标签，右侧补空格到 44 后打右框
+    $line = "  " + $Label
+    # 按显示宽度补齐（中文按2算）
+    $disp = 0
+    foreach($ch in $Label.ToCharArray()){ if([int][char]$ch -gt 255){ $disp+=2 } else { $disp+=1 } }
+    $pad = 43 - 3 - $disp
+    if($pad -lt 1){ $pad=1 }
+    Write-Host $Label -NoNewline
+    Write-Host (" "*$pad) -NoNewline
+    Write-Host "║" -ForegroundColor Cyan
+}
+
 function Show-Menu {
     Initialize-DataDir
     if(-not (Show-Disclaimer)){ exit }
     while($true){
         Clear-Host
         Show-Banner
-        Write-Host "  ╔══════════════════════════════════════════╗" -ForegroundColor Cyan
-        Write-Host "  ║  [1] 一键修复代理（重启后打不开网页）    ║"
-        Write-Host "  ║  [2] 校园网优化（自动备份+前后对比）      ║"
-        Write-Host "  ║  [3] 游戏优化（保守安全）                 ║"
-        Write-Host "  ║  [4] 测延迟 / 看网络状态                  ║"
-        Write-Host "  ║  [5] 备份与恢复                           ║"
-        Write-Host "  ║  [6] 设置 / 关于                          ║"
-        Write-Host "  ║  [0] 退出                                 ║"
-        Write-Host "  ╚══════════════════════════════════════════╝" -ForegroundColor Cyan
-        $sel = Read-Host "  请输入选项"
+        Write-Host "  ╔══════════════════════════════════════════════╗" -ForegroundColor Cyan
+        Show-MenuLine "1" "一键修代理（重启后打不开网页）"
+        Show-MenuLine "2" "校园网优化（N=快速约10秒 / Y=完整对比）"
+        Show-MenuLine "3" "游戏优化（保守安全）"
+        Show-MenuLine "4" "测延迟 / 看网络状态"
+        Show-MenuLine "5" "备份与恢复"
+        Show-MenuLine "6" "设置 / 关于"
+        Show-MenuLine "0" "退出"
+        Write-Host "  ╚══════════════════════════════════════════════╝" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "  请输入选项: " -NoNewline -ForegroundColor Green
+        $sel = Read-Host
         switch($sel){
             "1" { Ensure-Admin; Clear-Host; Write-Host "`n  ==== 代理残留清理 ====" -ForegroundColor Cyan; Clear-XmProxy; Write-Host "`n"; pause }
             "2" { Invoke-XmOptimization -Profile campus; pause }

@@ -2,7 +2,7 @@
 
 # 「小明」校园网加速工具箱
 
-**Windows 校园网 / 游戏网络一键优化 · 改前自动备份、可一键还原 · 延迟前后对比 · 纯本地运行**
+**Windows 校园网 / 游戏网络一键优化 · 改前自动备份、可一键还原 · 实时数据看板 · 纯本地运行**
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?logo=windows&logoColor=white)
@@ -15,7 +15,7 @@
 ![成功率](https://img.shields.io/endpoint?url=http://47.98.204.220/badge/success)
 [![Hits](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit.svg)](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit)
 
-[功能特性](#功能特性) · [快速开始](#快速开始) · [功能菜单](#功能菜单) · [效果对比](#优化前后对比) · [隐私说明](#隐私与安全) · [在线看板](http://47.98.204.220/)
+[功能特性](#功能特性) · [快速开始](#快速开始) · [功能菜单](#功能菜单) · [实时数据](#实时使用情况) · [隐私与安全](#隐私与安全) · [在线看板](http://47.98.204.220/)
 
 </div>
 

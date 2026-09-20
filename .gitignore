@@ -1,0 +1,23 @@
+# 统计后端数据与缓存
+stats-server/data/
+*.db
+*.sqlite
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 本地临时 / 测试产物
+*.log
+*.tmp
+*.bak
+test-*/
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/

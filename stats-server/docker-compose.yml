@@ -1,0 +1,19 @@
+services:
+  xm-stats:
+    build: .
+    image: xm-stats:latest
+    container_name: xm-stats
+    restart: unless-stopped
+    ports:
+      # 宿主机 80 -> 容器 8080；若 80 被占用，可改成 "8080:8080" 并在防火墙放行 8080
+      - "80:8080"
+    volumes:
+      # 数据库持久化到宿主机 ./data，容器重建不丢数据
+      - ./data:/data
+    environment:
+      CHART_CACHE_SEC: "300"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8080/health',timeout=4).status==200 else 1)"]
+      interval: 30s
+      timeout: 6s
+      retries: 3

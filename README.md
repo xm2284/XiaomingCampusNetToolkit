@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?logo=windows&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-5391FE?logo=powershell&logoColor=white)
-![Version](https://img.shields.io/badge/version-v0.1.4-orange)
+![Version](https://img.shields.io/badge/version-v0.1.5-orange)
 ![Last commit](https://img.shields.io/github/last-commit/xm2284/XiaomingCampusNetToolkit)
 [![Hits](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit.svg)](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit)
 

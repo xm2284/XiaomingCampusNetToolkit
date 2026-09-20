@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "SilentlyContinue"
 
 # ---------- 常量 ----------
-$Script:Version   = "0.1.4"
+$Script:Version   = "0.1.5"
 $Script:AppName   = "XiaomingToolkit"
 $Script:DataRoot  = Join-Path $env:LOCALAPPDATA $Script:AppName
 $Script:BackupDir = Join-Path $Script:DataRoot "backups"
@@ -724,6 +724,7 @@ switch($Mode){
     }
     default {
         Ensure-Admin   # 打开软件就请求管理员权限
+        New-XmDesktopShortcut
         Show-Menu
     }
 }

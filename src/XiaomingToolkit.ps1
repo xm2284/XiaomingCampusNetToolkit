@@ -12,7 +12,7 @@ param(
 $ErrorActionPreference = "SilentlyContinue"
 
 # ---------- 常量 ----------
-$Script:Version   = "0.1.0-dev"
+$Script:Version   = "0.1.1"
 $Script:AppName   = "XiaomingToolkit"
 $Script:DataRoot  = Join-Path $env:LOCALAPPDATA $Script:AppName
 $Script:BackupDir = Join-Path $Script:DataRoot "backups"
@@ -92,6 +92,7 @@ function Get-XmConfig {
         AcceptedVersion    = ""
         TelemetryEnabled   = $true
         InstallId          = [guid]::NewGuid().ToString()
+        HardwareProbed     = $false
         FirstRun           = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
     }
     return [PSCustomObject]$cfg
@@ -100,39 +101,47 @@ function Save-XmConfig {
     param($Config)
     $Config | ConvertTo-Json -Depth 5 | Set-Content -Path $Script:ConfigPath -Encoding UTF8
 }
+function Show-Banner {
+    Write-Host ""
+    Write-Host "     ___  __           __  __                   ____        __             " -ForegroundColor Cyan
+    Write-Host "    /   |/ /___ ______/ /_/ /_  ____ ___  ___  / __/_  ______/ /_____  _____ " -ForegroundColor Cyan
+    Write-Host "   / /| |/ __/ `/ ___/ __/ __ \/ __ `__ \/ _ \/ /_/ / / / __  / __/ _ \/ ___/" -ForegroundColor Cyan
+    Write-Host "  / ___ / /_/ (__  ) /_/ / / / / / / / / /  __/ __/ /_/ / /_/ / /_/  __/ /    " -ForegroundColor Cyan
+    Write-Host " /_/  |_\__/_/ /_/\__/_/ /_/_/ /_/ /_/\___/_/  \__,_/\__,_/\__/\___/_/     " -ForegroundColor Cyan
+    Write-Host "        作者: 小明   QQ: 2284517861" -ForegroundColor DarkGray
+    Write-Host ("        v{0}   纯本地运行 · 自动备份 · 一键还原" -f $Script:Version) -ForegroundColor DarkGray
+    Write-Host ""
+}
+
 function Show-Disclaimer {
     $cfg = Get-XmConfig
-    if($cfg.DisclaimerAccepted -and $cfg.AcceptedVersion -eq $Script:Version){ return $true }
+    if($cfg.DisclaimerAccepted -and $cfg.AcceptedVersion -eq $Script:Version -and $cfg.HardwareProbed){ return $true }
     Clear-Host
-    Write-Host ""
-    Write-Host "  ============================================================" -ForegroundColor Cyan
-    Write-Host "            「小明」校园网加速工具箱  v$($Script:Version)" -ForegroundColor Cyan
-    Write-Host "  ============================================================" -ForegroundColor Cyan
-    Write-Host ""
+    Show-Banner
     Write-Host "  【免责声明 / 使用须知】" -ForegroundColor Yellow
+    Write-Host "   1. 完全免费开源，仅诊断优化本机网络，不上传账号/密码/个人文件。"
+    Write-Host "   2. 会修改网卡高级属性与 TCP 设置，每次优化前自动备份，可一键还原。"
+    Write-Host "   3. 不保证一定提速，无法突破学校带宽上限，使用后果自负。"
+    Write-Host "   4. 匿名统计默认开启（不含 IP/MAC/账号），可在[设置]中关闭。"
     Write-Host ""
-    Write-Host "  1. 本工具完全免费、开源，仅用于本机网络的诊断与优化，不会访问、"
-    Write-Host "     上传任何账号、密码、浏览记录或个人文件。"
-    Write-Host "  2. 工具会修改网卡高级属性、TCP 参数等系统网络设置。虽然所有操作"
-    Write-Host "     均可备份与一键还原，但仍建议你在执行优化前先创建备份点。"
-    Write-Host "  3. 本工具无法突破学校网关对账号的带宽上限，也不保证一定提速；"
-    Write-Host "     因使用本工具产生的任何后果由使用者自行承担。"
-    Write-Host "  4. 代理清理、网络重置等功能请在理解其作用后使用。"
-    Write-Host ""
-    Write-Host "  【匿名统计】工具默认开启匿名使用统计（仅含系统版本、网卡厂商、" -ForegroundColor DarkGray
-    Write-Host "   优化结果、延迟改善等汇总数据，不含 IP/主机名/MAC/账号），用于" -ForegroundColor DarkGray
-    Write-Host "   改进工具；你可随时在[设置]中关闭。" -ForegroundColor DarkGray
-    Write-Host ""
-    $ans = Read-Host "  是否同意以上条款并继续？(输入 Y 同意，其他键退出)"
-    if($ans -eq "Y" -or $ans -eq "y"){
-        $cfg.DisclaimerAccepted = $true
-        $cfg.AcceptedVersion = $Script:Version
+    if(-not $cfg.HardwareProbed){
+        Write-Host "  正在自动识别本机网卡..." -ForegroundColor Gray
+        $hw = Get-XmHardware
+        foreach($a in $hw){
+            Write-Host ("  识别到: {0} | {1} | {2}" -f $a.Description,$a.Vendor,$a.Type) -ForegroundColor Cyan
+            $names = ($a.Capabilities | ForEach-Object { $_.Function }) -join "、"
+            Write-Host ("    可优化项 {0} 项: {1}" -f $a.Capabilities.Count,$names)
+        }
+        Write-Host ""
+    }
+    $ans = Read-Host "  是否同意并继续？(回车 或 Y=同意，其它键退出)"
+    if($ans -eq "" -or $ans -match "^[yY是]"){
+        $cfg.DisclaimerAccepted=$true; $cfg.AcceptedVersion=$Script:Version; $cfg.HardwareProbed=$true
         Save-XmConfig $cfg
-        Write-Log "用户同意免责声明"
-        Start-Sleep -Seconds 1
+        Start-Sleep -Milliseconds 800
         return $true
     }
-    Write-Host "  你未同意声明，工具将退出。" -ForegroundColor Red
+    Write-Host "  你未同意，工具退出。" -ForegroundColor Red
     Start-Sleep -Seconds 2
     return $false
 }
@@ -353,30 +362,34 @@ function Get-XmGateway {
     return $null
 }
 function Test-XmPing {
-    param([string]$Addr,[int]$Count=20)
-    $reply = Test-Connection -ComputerName $Addr -Count $Count -ErrorAction SilentlyContinue
-    $times = @($reply | ForEach-Object { $_.ResponseTime })
-    if($times.Count){
-        $recv=$times.Count; $loss=[math]::Round(100*(($Count-$recv)/$Count),1)
-        $avg=[math]::Round(($times|Measure-Object -Average).Average,1)
-        $min=($times|Measure-Object -Minimum).Minimum
-        $max=($times|Measure-Object -Maximum).Maximum
-        $jit=0.0
-        if($recv -ge 2){
-            $d=@(); for($i=1;$i -lt $recv;$i++){ $d += [math]::Abs($times[$i]-$times[$i-1]) }
-            $jit=[math]::Round(($d|Measure-Object -Average).Average,1)
+    param([string]$Addr,[int]$Count=20,[switch]$ShowProgress)
+    $times=@()
+    for($i=1;$i -le $Count;$i++){
+        $o = (ping -n 1 -w 1000 $Addr) 2>$null | Out-String
+        $ms = $null
+        if($o -match "(?:时间|time)[=<:](\d+)\s*ms"){ $ms=[double]$Matches[1] }
+        elseif($o -match "TTL="){ $ms=0 }
+        if($null -ne $ms){ $times+=$ms }
+        if($ShowProgress){
+            $done=[int](24*$i/$Count); $bar=("█"*$done)+("░"*(24-$done))
+            $eta = [math]::Max(0,($Count-$i))
+            Write-Host ("`r  [{0}] {1}/{2}  预计剩余 {3} 秒   " -f $bar,$i,$Count,$eta) -NoNewline
+            Start-Sleep -Milliseconds 150
         }
-        return [PSCustomObject]@{Target=$Addr;Sent=$Count;Recv=$recv;Loss=$loss;Min=$min;Max=$max;Avg=$avg;Jitter=$jit}
     }
-    # 回退 ping.exe（兼容中英文系统）
-    $out = (ping -n $Count -w 1000 $Addr) 2>$null | Out-String
-    $loss=100.0
-    if($out -match "(\d+)%.*(?:loss|丢失)"){ $loss=[double]$Matches[1] }
-    $min=$max=$avg=$null
-    if($out -match '(?i)(minimum|最短)\s*=\s*(\d+)\s*ms.*?(maximum|最长)\s*=\s*(\d+)\s*ms.*?(average|平均)\s*=\s*(\d+)\s*ms'){
-        $min=[double]$Matches[2]; $max=[double]$Matches[4]; $avg=[double]$Matches[6]
+    if($ShowProgress){ Write-Host "`r$(' '*60)`r" -NoNewline }
+    $recv=$times.Count
+    $loss=[math]::Round(100*(($Count-$recv)/$Count),1)
+    if(-not $recv){ return [PSCustomObject]@{Target=$Addr;Sent=$Count;Recv=0;Loss=100;Min=$null;Max=$null;Avg=$null;Jitter=0} }
+    $avg=[math]::Round(($times|Measure-Object -Average).Average,1)
+    $min=[math]::Round(($times|Measure-Object -Minimum).Minimum,1)
+    $max=[math]::Round(($times|Measure-Object -Maximum).Maximum,1)
+    $jit=0.0
+    if($recv -ge 2){
+        $d=@(); for($i=1;$i -lt $recv;$i++){ $d+=[math]::Abs($times[$i]-$times[$i-1]) }
+        if($d.Count){ $jit=[math]::Round(($d|Measure-Object -Average).Average,1) }
     }
-    return [PSCustomObject]@{Target=$Addr;Sent=$Count;Recv=0;Loss=[math]::Round($loss,1);Min=$min;Max=$max;Avg=$avg;Jitter=0}
+    return [PSCustomObject]@{Target=$Addr;Sent=$Count;Recv=$recv;Loss=$loss;Min=$min;Max=$max;Avg=$avg;Jitter=$jit}
 }
 function Get-XmWirelessInfo {
     $w = netsh wlan show interfaces 2>$null | Out-String
@@ -385,18 +398,21 @@ function Get-XmWirelessInfo {
     return ("SSID={0} 频段={1} 信号={2} 下行={3}Mbps" -f (m "SSID\s*:\s*([^\r\n]+)"),(m "Band\s*:\s*([^\r\n]+)"),(m "Signal\s*:\s*([^\r\n]+)"),(m "Receive rate[^\r\n]*?:\s*([\d.]+)"))
 }
 function Test-XmLatency {
-    param([int]$Count=20)
+    param([int]$Count=20,[switch]$Quiet)
     $targets=@()
-    $gw=Get-XmGateway; if($gw){ $targets+=[pscustomobject]@{Name="网关";Addr=$gw} }
-    $fast=@()
-    foreach($d in @("223.5.5.5","119.29.29.29","1.1.1.1","114.114.114.114")){
-        $o=(ping -n 1 -w 800 $d) 2>$null | Out-String
-        if($o -match "TTL="){ $fast+=$d; if($fast.Count -ge 2){break} }
+    $gw=Get-XmGateway
+    if($gw){ $targets+= [pscustomobject]@{Name="网关";Addr=$gw} }
+    # 只探活国内两个常用 DNS，取第一个通的（去掉 1.1.1.1 国内不通）
+    $fast=$null
+    foreach($d in @("223.5.5.5","119.29.29.29")){
+        $o=(ping -n 1 -w 600 $d) 2>$null | Out-String
+        if($o -match "TTL="){ $fast=$d; break }
     }
-    foreach($d in $fast){ $targets+=[pscustomobject]@{Name="DNS";Addr=$d} }
+    if($fast){ $targets+= [pscustomobject]@{Name="DNS";Addr=$fast} }
     $results=@()
     foreach($t in $targets){
-        $r=Test-XmPing -Addr $t.Addr -Count $Count
+        if(-not $Quiet){ Write-Host ("  -> 正在测试 {0} {1}（{2} 个包）" -f $t.Name,$t.Addr,$Count) -ForegroundColor Gray }
+        $r=Test-XmPing -Addr $t.Addr -Count $Count -ShowProgress
         $r | Add-Member -NotePropertyName Label -NotePropertyValue $t.Name
         $results+=$r
     }
@@ -479,19 +495,43 @@ function Set-XmAdapterGoal {
 }
 
 # ---------- 优化主流程：备份 -> 基线 -> 优化 -> 重启网卡 -> 复测对比 ----------
+function Wait-XmNetReady {
+    param([int]$Timeout=15)
+    for($t=1;$t -le $Timeout;$t++){
+        Start-Sleep -Seconds 1
+        $up = Get-NetAdapter -Physical | Where-Object { $_.Status -eq "Up" -and $_.LinkSpeed }
+        if($up){ Write-Host "`r$(' '*34)`r" -NoNewline; return $true }
+        Write-Host ("`r  等待 Wi-Fi 重连... {0}s / {1}s   " -f $t,$Timeout) -NoNewline
+    }
+    Write-Host "`r$(' '*34)`r" -NoNewline
+    return $false
+}
+
 function Invoke-XmOptimization {
     param([ValidateSet("campus","gaming")][string]$Profile)
     Ensure-Admin
     Clear-Host
     $pName = if($Profile -eq "gaming"){"游戏"}else{"校园网"}
+    Write-Host ""
     Write-Host "  ==== 进入 $pName 优化模式 ====" -ForegroundColor Cyan
-    Write-Host "  [0/4] 自动创建备份点（可一键还原）..." -ForegroundColor Yellow
+
+    $ans = Read-Host "`n  要测速对比吗？(Y=完整对比约50秒 / N=快速完成约10秒)"
+    $doLatency = -not ($ans -match "^[nN]")
+    if($doLatency){ Write-Host "`n  完整模式：将测优化前后延迟（约 50 秒）" -ForegroundColor Gray }
+    else          { Write-Host "`n  快速模式：跳过测速，约 10 秒完成" -ForegroundColor Green }
+
+    Write-Host "`n  [1/4] 自动创建备份点（可一键还原）..." -ForegroundColor Yellow
     $bk = New-XmBackup
     Write-Host "      备份: $bk"
-    Write-Host "  [1/4] 测量优化前延迟（基线，约几秒）..."
-    $before = Test-XmLatency -Count 20
-    Show-XmLatency $before
-    Write-Host "  [2/4] 应用优化..." -ForegroundColor Yellow
+
+    $before=$null
+    if($doLatency){
+        Write-Host "`n  [2/4] 测量优化前延迟（基线）..." -ForegroundColor Yellow
+        $before = Test-XmLatency -Count 20
+        Show-XmLatency $before
+    }
+
+    Write-Host "`n  [3/4] 应用优化..." -ForegroundColor Yellow
     $hw = Get-XmHardware; $applied=0
     foreach($ad in $hw){
         foreach($c in $ad.Capabilities){
@@ -507,35 +547,37 @@ function Invoke-XmOptimization {
             }
         }
     }
-    Disable-XmNagle
-    $applied++
+    Disable-XmNagle; $applied++
     Write-Host "      [OK] Nagle 算法（降低游戏/网页小包延迟）"
-    Write-Host "  [3/4] 重启活动网卡使设置生效（Wi-Fi 会自动重连，约5-10秒）..." -ForegroundColor Yellow
+
+    Write-Host "`n  [4/4] 重启网卡使设置生效（Wi-Fi 自动重连）..." -ForegroundColor Yellow
     foreach($ad in (Get-NetAdapter -Physical | Where-Object {$_.Status -eq "Up"})){
         Restart-NetAdapter -Name $ad.Name -Confirm:$false -ErrorAction SilentlyContinue
     }
-    Start-Sleep -Seconds 10
-    Write-Host "  [4/4] 复测延迟..."
-    $after = Test-XmLatency -Count 20
-    Show-XmLatency $after
-    # 对比（网关行）
-    $gb=($before.Results|Where-Object{$_.Label -eq "网关"}|Select-Object -First 1).Avg
-    $ga=($after.Results|Where-Object{$_.Label -eq "网关"}|Select-Object -First 1).Avg
-    Write-Host "  ------------------------------------------------------------" -ForegroundColor Cyan
-    if($gb -and $ga){
-        $delta=[math]::Round($ga-$gb,1)
-        $pct= if($gb){[math]::Round(100*($gb-$ga)/$gb,1)}else{0}
-        $arrow= if($delta -le 0){"下降"}else{"上升"}
-        Write-Host ("  网关延迟: {0} ms  ->  {1} ms  ({2} {3} ms / {4:0.##}%)" -f $gb,$ga,$arrow,[math]::Abs($delta),$pct) -ForegroundColor Green
-    } else { Write-Host "  （未能取得网关延迟，对比仅供参考）" }
-    Write-Host "  提示：延迟受网络波动影响，结果仅供参考；如不满意可在菜单选[7]从备份恢复。" -ForegroundColor DarkGray
-    # 报告存盘
+    Wait-XmNetReady -Timeout 15
+    Write-Host "  网卡已重连。" -ForegroundColor Green
+
+    $after=$null; $gb=$null; $ga=$null
+    if($doLatency){
+        Write-Host "`n  [复测] 测量优化后延迟..." -ForegroundColor Yellow
+        $after = Test-XmLatency -Count 20
+        Show-XmLatency $after
+        $gb=($before.Results|Where-Object{$_.Label -eq "网关"}|Select-Object -First 1).Avg
+        $ga=($after.Results|Where-Object{$_.Label -eq "网关"}|Select-Object -First 1).Avg
+        Write-Host "  ------------------------------------------------------------" -ForegroundColor Cyan
+        if($gb -and $ga){
+            $delta=[math]::Round($ga-$gb,1)
+            $pct=if($gb){[math]::Round(100*($gb-$ga)/$gb,1)}else{0}
+            $arrow=if($delta -le 0){"下降"}else{"上升"}
+            Write-Host ("  网关延迟: {0} ms -> {1} ms  ({2} {3} ms / {4:0.##}%)" -f $gb,$ga,$arrow,[math]::Abs($delta),$pct) -ForegroundColor Green
+        }
+    }
+    Write-Host "`n  完成！如不满意可在菜单选 [5] 从备份恢复。" -ForegroundColor Green
     $rp=[pscustomobject]@{Profile=$Profile;Backup=$bk;Time=(Get-Date -Format "yyyy-MM-dd HH:mm:ss");Before=$before;After=$after}
     $rp | ConvertTo-Json -Depth 8 | Set-Content (Join-Path $Script:ReportDir ("compare_{0}.json" -f (Get-Date -Format "yyyyMMdd_HHmmss"))) -Encoding UTF8
-    $ven = if($hw.Count){$hw[0].Vendor}else{"Unknown"}
-    $at  = if($hw.Count -and $hw[0].Type -eq "无线"){"wireless"}else{"wired"}
-    Send-XmTelemetry @{mode=$Profile;success=1;opt_count=$applied;vendor=$ven;adapter_type=$at;latency_before=$gb;latency_after=$ga}
-    Start-Sleep -Seconds 2
+    $ven=if($hw.Count){$hw[0].Vendor}else{"Unknown"}
+    Send-XmTelemetry @{mode=$Profile;success=1;opt_count=$applied;vendor=$ven;latency_before=$gb;latency_after=$ga}
+    Start-Sleep -Seconds 1
 }
 
 # ---------- 菜单 ----------
@@ -544,60 +586,60 @@ function Show-Menu {
     if(-not (Show-Disclaimer)){ exit }
     while($true){
         Clear-Host
-        Write-Host ""
-        Write-Host "  ============================================================" -ForegroundColor Cyan
-        Write-Host "        「小明」校园网加速工具箱  v$Script:Version" -ForegroundColor Cyan
-        Write-Host "  ============================================================" -ForegroundColor Cyan
-        Write-Host "    [1] 硬件探测与优化能力画像"
-        Write-Host "    [2] 一键修复代理残留（重启后打不开网页用这个）"
-        Write-Host "    [3] 延迟测试（延迟对比参考）"
-        Write-Host "    [4] 校园网优化模式（自动备份+优化+复测对比）"
-        Write-Host "    [5] 游戏优化模式（保守安全）"
-        Write-Host "    [6] 创建备份点"
-        Write-Host "    [7] 从备份恢复"
-        Write-Host "    [8] 查看当前网络状态"
-        Write-Host "    [9] 设置"
-        Write-Host "    [0] 退出"
-        Write-Host "  ------------------------------------------------------------"
-        $cfg = Get-XmConfig
-        $tel = if($cfg.TelemetryEnabled){"开启"}else{"关闭"}
-        Write-Host ("    匿名统计: {0}    数据在: %LOCALAPPDATA%\XiaomingToolkit" -f $tel) -ForegroundColor DarkGray
+        Show-Banner
+        Write-Host "  ╔══════════════════════════════════════════╗" -ForegroundColor Cyan
+        Write-Host "  ║  [1] 一键修复代理（重启后打不开网页）    ║"
+        Write-Host "  ║  [2] 校园网优化（自动备份+前后对比）      ║"
+        Write-Host "  ║  [3] 游戏优化（保守安全）                 ║"
+        Write-Host "  ║  [4] 测延迟 / 看网络状态                  ║"
+        Write-Host "  ║  [5] 备份与恢复                           ║"
+        Write-Host "  ║  [6] 设置 / 关于                          ║"
+        Write-Host "  ║  [0] 退出                                 ║"
+        Write-Host "  ╚══════════════════════════════════════════╝" -ForegroundColor Cyan
         $sel = Read-Host "  请输入选项"
         switch($sel){
-            "1" { Clear-Host; Show-Hardware | Out-Null; pause }
-            "2" { Ensure-Admin; Clear-Host; Write-Host "`n  ==== 代理残留清理 ====" -ForegroundColor Cyan; Clear-XmProxy; pause }
-            "3" { Clear-Host; Write-Host "`n  延迟测试中...`n" -ForegroundColor Yellow; $l=Test-XmLatency -Count 20; Show-XmLatency $l; Write-Host "`n"; pause }
-            "4" { Invoke-XmOptimization -Profile campus; pause }
-            "5" { Invoke-XmOptimization -Profile gaming; pause }
-            "6" { Ensure-Admin; $d=New-XmBackup; Clear-Host; Write-Host "`n  备份点已创建: $d`n" -ForegroundColor Green; pause }
-            "7" {
+            "1" { Ensure-Admin; Clear-Host; Write-Host "`n  ==== 代理残留清理 ====" -ForegroundColor Cyan; Clear-XmProxy; Write-Host "`n"; pause }
+            "2" { Invoke-XmOptimization -Profile campus; pause }
+            "3" { Invoke-XmOptimization -Profile gaming; pause }
+            "4" {
+                Clear-Host
+                Write-Host "  ---- 延迟测试 ----" -ForegroundColor Cyan
+                $l=Test-XmLatency -Count 12; Show-XmLatency $l
+                Write-Host "`n  ---- 当前网络状态 ----" -ForegroundColor Cyan
+                $px=Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+                Write-Host ("  系统代理: {0}" -f $(if($px.ProxyEnable){"开 $($px.ProxyServer)"}else{"关"}))
+                netsh wlan show interfaces | Select-String "SSID|Signal|Receive rate"
+                Write-Host "`n"; pause
+            }
+            "5" {
                 $bks=Get-XmBackups
-                if(-not $bks.Count){ Write-Host "`n  暂无备份点。`n"; pause; continue }
-                Clear-Host; Write-Host "`n  可用备份点:"
-                for($i=0;$i -lt $bks.Count;$i++){ Write-Host ("   [{0}] {1}" -f ($i+1),$bks[$i].Name) }
-                $pick=Read-Host "  输入序号恢复(其他键返回)"
-                $n=0; if([int]::TryParse($pick,[ref]$n) -and $n -ge 1 -and $n -le $bks.Count){
-                    Restore-XmBackup $bks[$n-1].FullName
-                    Write-Host "  已恢复，建议重连网卡以生效。" -ForegroundColor Yellow; pause
+                Clear-Host; Write-Host "`n  备份与恢复" -ForegroundColor Cyan
+                Write-Host "    [1] 立即创建备份点"
+                Write-Host "    [2] 从备份恢复"
+                for($i=0;$i -lt $bks.Count;$i++){ Write-Host ("      [{0}] {1}" -f ($i+1),$bks[$i].Name) }
+                $pick=Read-Host "  输入序号恢复 / 1=新建 / 其它=返回"
+                if($pick -eq "1"){ New-XmBackup | Out-Null; Write-Host "  已创建新备份点。" -ForegroundColor Green; Start-Sleep 1 }
+                else {
+                    $n=0
+                    if([int]::TryParse($pick,[ref]$n) -and $n -ge 1 -and $n -le $bks.Count){
+                        Ensure-Admin
+                        Restore-XmBackup $bks[$n-1].FullName
+                        Wait-XmNetReady 15
+                        Write-Host "  已恢复，建议稍等几秒网络就绪。" -ForegroundColor Yellow; pause
+                    }
                 }
             }
-            "8" {
-                Clear-Host
-                $px=Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-                Write-Host "`n  系统代理开关: $($px.ProxyEnable)   代理地址: '$($px.ProxyServer)'"
-                ipconfig | Select-String "IPv4|默认网关|Default Gateway"
-                Write-Host ""; netsh wlan show interfaces | Select-String "SSID|Band|Channel|Signal|Receive rate|Transmit rate"
-                pause
-            }
-            "9" {
-                Clear-Host
+            "6" {
+                Clear-Host; Write-Host "`n  设置 / 关于" -ForegroundColor Cyan
                 $c=Get-XmConfig
-                Write-Host "`n    [1] 匿名统计: $(if($c.TelemetryEnabled){'开启'}else{'关闭'})  (按1切换)"
-                Write-Host "    [2] 打开数据文件夹 ($($Script:DataRoot))"
+                Write-Host ("    [1] 匿名统计: {0}  (按1切换)" -f $(if($c.TelemetryEnabled){'开'}else{'关'}))
+                Write-Host "    [2] 打开数据文件夹"
+                Write-Host "    [3] 关于 / 联系方式"
                 Write-Host "    [其他键] 返回"
                 $s=Read-Host "  选项"
-                if($s -eq "1"){ $c.TelemetryEnabled=-not $c.TelemetryEnabled; Save-XmConfig $c; Write-Host "已切换为: $(if($c.TelemetryEnabled){'开启'}else{'关闭'})"; Start-Sleep 1 }
+                if($s -eq "1"){ $c.TelemetryEnabled=-not $c.TelemetryEnabled; Save-XmConfig $c; Write-Host ("已切换为: {0}" -f $(if($c.TelemetryEnabled){'开'}else{'关'})); Start-Sleep 1 }
                 if($s -eq "2"){ explorer.exe $Script:DataRoot }
+                if($s -eq "3"){ Write-Host "`n  「小明」校园网加速工具箱  v$($Script:Version)" -ForegroundColor Cyan; Write-Host "  作者: 小明   QQ: 2284517861"; Write-Host "  免费开源，仅供学习交流。`n"; pause }
             }
             "0" { exit }
         }
@@ -609,14 +651,18 @@ Initialize-DataDir
 Write-Log "===== 工具箱启动 mode=$Mode ====="
 switch($Mode){
     "detect" { Show-Hardware | Out-Null }
-    "latency" { $l=Test-XmLatency -Count 20; Show-XmLatency $l }
-    "proxy"   { Clear-XmProxy }
+    "latency" { $l=Test-XmLatency -Count 12; Show-XmLatency $l }
+    "proxy"   { Ensure-Admin; Clear-XmProxy }
     "optcampus" { Invoke-XmOptimization -Profile campus }
     "optgaming" { Invoke-XmOptimization -Profile gaming }
-    "backup" { $d=New-XmBackup; Write-Host "备份完成: $d" }
+    "backup" { Ensure-Admin; $d=New-XmBackup; Write-Host "备份完成: $d" }
     "restore" {
+        Ensure-Admin
         $bks=Get-XmBackups
         if($bks.Count){ Restore-XmBackup $bks[0].FullName } else { Write-Host "暂无备份" }
     }
-    default { Show-Menu }
+    default {
+        Ensure-Admin   # 打开软件就请求管理员权限
+        Show-Menu
+    }
 }

@@ -97,7 +97,7 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 ![成功率](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fsuccess)
 
 
-![每日调用趋势](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage)
+![每日调用趋势](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage%26v%3D2)
 
 </div>
 
@@ -162,11 +162,11 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 
 | 每日调用 | 网卡厂商 |
 |:---:|:---:|
-| ![每日调用](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage) | ![网卡厂商](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dvendor) |
+| ![每日调用](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage%26v%3D2) | ![网卡厂商](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dvendor%26v%3D2) |
 
 | 使用模式 | 系统版本 |
 |:---:|:---:|
-| ![使用模式](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dmode) | ![系统版本](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dos) |
+| ![使用模式](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dmode%26v%3D2) | ![系统版本](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dos%26v%3D2) |
 
 
 </div>

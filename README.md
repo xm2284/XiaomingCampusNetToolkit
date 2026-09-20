@@ -42,20 +42,23 @@
 
 > 需要 Windows 10 / 11。首次运行会请求管理员权限（改网卡 / 注册表必须）。
 
-1. 到 [Releases](../../releases) 下载最新的 `启动「小明」校园网加速工具箱.bat`；
-2. **右键 → 以管理员身份运行**（或直接双击，脚本会自动弹 UAC 提权）；
-3. 首次运行阅读免责声明，之后按菜单数字选择功能即可。
+**方式一（推荐）：下载单个 exe**
 
-也可以直接克隆运行：
+1. 到 [Releases](../../releases) 下载最新的 `Start-Xiaoming-Toolkit.exe`；
+2. 直接双击运行（会自动弹 UAC 提权）；
+3. 首次运行阅读免责声明，按菜单数字选择功能即可。
+
+> 若被 SmartScreen / 杀软拦截：点"更多信息 → 仍要运行"。这是 PowerShell 打包成 exe 的常见误报，脚本完全开源可逐行审查。
+
+**方式二：源码 / 脚本运行**
+
+必须**整个仓库下载**（不能只下单个 bat / ps1，它们要在同目录）：仓库页绿色 `<> Code` → `Download ZIP`，解压后双击 `Start-Xiaoming-Toolkit.bat`；或 git clone 后运行：
 
 ```powershell
 git clone https://github.com/xm2284/XiaomingCampusNetToolkit.git
 cd XiaomingCampusNetToolkit
-# 双击根目录的「启动…bat」，或：
 powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 ```
-
-> 提示：PowerShell 脚本文件为 UTF-8 (带 BOM)，bat 为 GBK 编码，**请勿用编辑器另存为其它编码**，否则中文菜单会乱码。
 
 ## 功能菜单
 
@@ -123,7 +126,8 @@ powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 XiaomingCampusNetToolkit/
 ├─ src/
 │  └─ XiaomingToolkit.ps1      # 主程序（全部功能 + 测试模式）
-├─ 启动「小明」校园网加速工具箱.bat   # 双击启动器（自动提权）
+├─ Start-Xiaoming-Toolkit.exe   # 单文件版（Release 提供，双击即用）
+├─ Start-Xiaoming-Toolkit.bat   # 脚本启动器（需连同 src 一起）
 ├─ stats-server/              # 可选的匿名统计后端（Docker）
 ├─ README.md
 ├─ LICENSE

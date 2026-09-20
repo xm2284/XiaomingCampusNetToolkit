@@ -21,3 +21,6 @@ desktop.ini
 # IDE
 .vscode/
 .idea/
+
+# 打包产物（放 Release，不进 git）
+*.exe

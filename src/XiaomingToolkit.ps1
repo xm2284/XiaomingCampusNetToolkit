@@ -68,7 +68,14 @@ function Ensure-Admin {
     if(-not (Test-Admin)){
         Write-Host "需要管理员权限，正在请求..." -ForegroundColor Yellow
         try {
-            Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+            $me = $PSCommandPath
+            if($me -and $me.ToLower().EndsWith('.ps1')){
+                Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$me`""
+            } elseif($me -and $me.ToLower().EndsWith('.exe')){
+                Start-Process $me -Verb RunAs
+            } else {
+                Start-Process (Get-Process -Id $PID).Path -Verb RunAs
+            }
         } catch { Write-Host "已取消提权，操作中止。" -ForegroundColor Red }
         exit
     }

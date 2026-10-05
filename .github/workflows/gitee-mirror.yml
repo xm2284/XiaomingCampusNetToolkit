@@ -31,39 +31,18 @@ jobs:
           REPO="${{ github.event.repository.name }}"
           USER="${{ secrets.GITEE_USERNAME }}"
           URL="https://${USER}:${{ secrets.GITEE_TOKEN }}@gitee.com/${USER}/${REPO}.git"
-          git remote remove origin 2>/dev/null || true
+          git remote remove gitee 2>/dev/null || true
           git remote add gitee "$URL"
-          git config --global http.postBuffer 524288000
-          git config --global http.lowSpeedLimit 1000
-          git config --global http.lowSpeedTime 60
-          ok=0
-          for i in 1 2 3; do
-            echo "=== Mirror push attempt $i ==="
-            if timeout 180 git push --force --prune gitee \
-                 "+refs/heads/*:refs/heads/*" "+refs/tags/*:refs/tags/*"; then
-              ok=1
-              break
-            fi
-            echo "attempt $i failed, retrying in 10s ..."
-            sleep 10
-          done
-          if [ "$ok" != "1" ]; then
-            echo "::error::Mirror push failed after 3 attempts"
-            exit 1
-          fi
+          # 只推送分支与 tag，避免把 refs/remotes/* 当成 hidden ref 推送而被拒绝
+          git push --prune gitee "+refs/heads/*:refs/heads/*" "+refs/tags/*:refs/tags/*"
 
-      - name: Sync repo metadata (About/description) to Gitee
+      - name: Sync description and project labels to Gitee
+        if: always()
         shell: bash
         env:
-          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
-          GITEE_USER: ${{ secrets.GITEE_USERNAME }}
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
           REPO_NAME: ${{ github.event.repository.name }}
-          REPO_DESC: ${{ github.event.repository.description }}
-          REPO_HOME: ${{ github.event.repository.homepage }}
-        run: |
-          BODY=$(jq -n --arg t "$GITEE_TOKEN" --arg n "$REPO_NAME" --arg d "$REPO_DESC" --arg h "$REPO_HOME" \
-            '{access_token:$t, name:$n, description:$d, homepage:$h}')
-          echo "Syncing Gitee description: ${REPO_DESC}"
-          curl -sS -X PATCH "https://gitee.com/api/v5/repos/${GITEE_USER}/${REPO_NAME}" \
-            -H "Content-Type: application/json" -d "$BODY"
-          echo
+          GITEE_USERNAME: ${{ secrets.GITEE_USERNAME }}
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: python3 .github/scripts/sync_gitee_meta.py

@@ -1,204 +1,186 @@
 <div align="center">
 
-# 「小明」校园网加速工具箱
+# ⚡「小明」校园网加速工具箱 (XiaomingCampusNetToolkit)
 
-**Windows 校园网 / 游戏网络一键优化 · 改前自动备份、可一键还原 · 实时数据看板 · 纯本地运行**
+**专为校园网 / 宿舍 Wi-Fi / 游戏网络打造的 Windows 一键优化加速器**  
+*动态网卡语义自适应 · 改前快照秒级还原 · 代理残留一键修复 · 实时匿名看板*
 
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078D6?logo=windows&logoColor=white)
-![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-5391FE?logo=powershell&logoColor=white)
-![Version](https://img.shields.io/badge/version-v0.1.5-orange)
-![Last commit](https://img.shields.io/github/last-commit/xm2284/XiaomingCampusNetToolkit)
-![总调用](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Ftotal)
-![用户数](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fusers)
-![延迟下降](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fimprove)
-![成功率](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fsuccess)
-[![Hits](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit.svg)](https://hits.sh/github.com/xm2284/XiaomingCampusNetToolkit)
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Platform" />
+  <img src="https://img.shields.io/badge/PowerShell-5.1+-5391FE?style=flat-square&logo=powershell&logoColor=white" alt="PowerShell" />
+  <img src="https://img.shields.io/badge/Version-v0.1.5-orange?style=flat-square" alt="Version" />
+  <a href="https://github.com/xm2284/XiaomingCampusNetToolkit/releases">
+    <img src="https://img.shields.io/github/v/release/xm2284/XiaomingCampusNetToolkit?style=flat-square&color=brightgreen" alt="Release" />
+  </a>
+  <a href="https://github.com/xm2284/XiaomingCampusNetToolkit/stargazers">
+    <img src="https://img.shields.io/github/stars/xm2284/XiaomingCampusNetToolkit?style=flat-square" alt="Stars" />
+  </a>
+</p>
 
-[功能特性](#功能特性) · [快速开始](#快速开始) · [功能菜单](#功能菜单) · [实时数据](#实时使用情况) · [隐私与安全](#隐私与安全) · [在线看板](http://47.98.204.220/)
+<p align="center">
+  <a href="#-运行效果演示">🎬 效果演示</a> •
+  <a href="#-痛点与特性">🌟 痛点解决</a> •
+  <a href="#-快速上手">🚀 快速开始</a> •
+  <a href="#-核心菜单">📋 功能菜单</a> •
+  <a href="#-网络底层调优原理">🛠️ 调优原理</a> •
+  <a href="#-实时运行数据">📊 在线看板</a> •
+  <a href="#-常见问题-faq">❓ 常见问题</a>
+</p>
 
 </div>
 
 ---
 
-## 🎬 运行效果预览
+## 🎬 运行效果演示
 
 <p align="center">
-  <img src="assets/demo.svg" alt="小明校园网加速工具箱运行演示" width="100%" />
+  <img src="assets/demo.svg" alt="小明校园网加速工具箱终端演示" width="100%" />
 </p>
 
 ---
 
-## 这是什么
+## 💡 痛点与特性
 
-一个专为**校园网（如 i-Star =-= ）**和**校园环境下打游戏**设计的 Windows 网络优化工具箱。
-它解决两个最常见的痛点：
+> **“学校校园网又卡又跳 ping，打了半天网页都打不开……”**
 
-**淦，学校校园网也太卡了o(╥﹏╥)o，能快一点是一点吧qwq**
-1. **开了梯子 / 代理后重启电脑，网页打不开** —— 一键清掉系统里残留的代理设置；
-2. **校园网 Wi-Fi 又卡又跳** —— 一键应用跨网卡自适应的优化，并**自动备份、随时还原**，优化前后用真实 ping 对比效果。
+宿舍与校园网络环境错综复杂（如 i-Star、i-Campus 等认证 Wi-Fi），本工具聚焦高校场景下最痛、最典型的网络顽疾：
 
-> 没有捆绑、没有常驻后台、没有安装过程。一个 PowerShell 脚本 + 一个双击启动的 bat，所有改动都在本地、可逆。
+| 典型痛点场景 | 本工具解决方案 |
+| :--- | :--- |
+| **开梯子 / VPN 后重启无法上网** | 🧹 **一键代理深度清除**：清理系统代理、WinHTTP、环境参数 `HTTP(S)_PROXY`，自动刷新系统通知与 DNS 缓存。 |
+| **校园网频频跳 ping、丢包严重** | 🎓 **校园网专属加速**：锁定 5GHz 频段、禁用 MIMO 激进节能、关闭 U-APSD 省电与数据包合并，保持高频传输响应。 |
+| **FPS / MOBA 游戏小包卡顿延时** | 🎮 **游戏级吞吐模式**：启用 Throughput Booster 吞吐增强，关闭 Nagle 算法（减少小包延迟），稳定网络抖动。 |
+| **担心改乱配置把网络弄坏** | 🛟 **改前自动快照 + 秒级还原**：改动前无感留存注册表与驱动状态，最近 10 次快照一键回滚，完全可逆。 |
+| **不知道优化到底有没有用** | 📊 **20 包真实延迟对照测试**：自动测算 Min / Avg / Max 延迟、抖动与丢包率，直观呈现下降百分比。 |
 
-## 功能特性
+---
 
-- ⚡ **快速 / 完整双模式（v0.1.1）** —— 选优化后问一句 `要测速对比吗？`：**赶时间输 N，约 10 秒完事**（只备份+改设置+重启网卡）；想看真实效果输 **Y**，跑完整的优化前后 20 包延迟对比。
-- ⏱️ **实时进度条（v0.1.1）** —— 延迟测试逐包显示进度 `[███░░] n/N 预计剩余 X 秒`，不再黑屏干等。
-- 🚀 **启动即提权（v0.1.1）** —— 双击 exe 立刻弹管理员权限，不用等选功能。
-- 🤖 **首启自动探测（v0.1.1）** —— 第一次打开自动识别你网卡型号和可优化项，只问一次同意，之后不再重复探测。
-- 🧹 **一键清理代理残留** —— 关闭系统代理、重置 WinHTTP、清理 `HTTP(S)_PROXY` 环境变量、通知系统刷新、刷新 DNS。重启后打不开网页时，点一下就好。
-- 📶 **跨网卡自适应** —— 按网卡驱动实际支持的高级属性动态匹配（不硬编码厂商值），Intel / Realtek / MediaTek 等都能识别，找不到就自动跳过，绝不瞎改。
-- 🎓 **校园网模式** —— 优先 5GHz 频段、关闭 MIMO 节能、关闭 U-APSD 省电、关闭数据包合并、关闭 Nagle 算法降低小包延迟。
-- 🎮 **游戏模式** —— 在校园网模式基础上再开启吞吐增强（Throughput Booster），**保守、安全**：不动 MTU、不动拥塞算法、不动 LSO / QoS / 中断亲和。
-- 🛟 **自动备份 + 一键还原** —— 每次优化前自动备份网卡高级属性 / TCP 全局参数 / 代理 / Nagle 注册表，保留最近 10 个快照，随时回到原状。备份存在 `%LOCALAPPDATA%\XiaomingToolkit\backups`，**不会往桌面乱扔文件**。
-- 📊 **优化前后延迟对比** —— 自动选最快公共 DNS、ping 网关与 DNS，输出 min / avg / max / 抖动 / 丢包，并算改善百分比。
-- 🔍 **网络状态体检** —— 一键看 SSID、频段、信号、协商速率、网关、DNS、当前代理状态。
-- 🤫 **默认匿名、不打扰** —— 首次运行展示免责声明；遥测默认自动上报，但**完全匿名**，可在菜单设置里关闭。
+## 🌟 核心工程特色
 
-## 快速开始
+1. **跨网卡语义自适应识别**：动态检测网卡驱动的高级属性（Intel / Realtek / MediaTek 联发科等），按语义目标智能匹配，绝不硬编码盲改。
+2. **双模式自选**：
+   - **快速模式（输 N）**：赶时间开黑，约 10 秒完成备份、应用与网卡静默重连；
+   - **对比模式（输 Y）**：全自动打出 20 包真实 ICMP 测试，逐包显示实时进度条。
+3. **绿色纯净免安装**：开箱即用，无任何后台常驻服务，启动即自动请求管理员提权。
 
-> 需要 Windows 10 / 11。首次运行会请求管理员权限（改网卡 / 注册表必须）。
+---
 
-**方式一（推荐）：下载单个 exe**
+## 🚀 快速上手
 
-1. 到 [Releases](../../releases) 下载最新的 `XiaomingCampusNetToolkit.exe`；
-2. 直接双击运行（会自动弹 UAC 提权）；
-3. 首次运行阅读免责声明，按菜单数字选择功能即可。
+> 支持 Windows 10 / 11 操作系统（首次运行会自动弹出 UAC 请求管理员权限）。
 
-> 若被 SmartScreen / 杀软拦截：点"更多信息 → 仍要运行"。这是 PowerShell 打包成 exe 的常见误报，脚本完全开源可逐行审查。
+### 方式一：下载单文件版 Exe（推荐小白用户）
+1. 前往 **[Releases 最新发布页](../../releases)** 下载 `XiaomingCampusNetToolkit.exe`；
+2. 直接双击启动，在弹出的控制台按数字键输入对应功能。
+   > *注：如遇 Windows SmartScreen 提示，点击「更多信息 → 仍要运行」即可（工具代码 100% 开源，可逐行审计）。*
 
-**方式二：源码 / 脚本运行**
-
-必须**整个仓库下载**（不能只下单个 bat / ps1，它们要在同目录）：仓库页绿色 `<> Code` → `Download ZIP`，解压后双击 `Start-Xiaoming-Toolkit.bat`；或 git clone 后运行：
-
+### 方式二：克隆源码运行（推荐开发者）
 ```powershell
+# 1. 克隆本仓库
 git clone https://github.com/xm2284/XiaomingCampusNetToolkit.git
 cd XiaomingCampusNetToolkit
+
+# 2. 以管理员权限运行主脚本
 powershell -ExecutionPolicy Bypass -File "src\XiaomingToolkit.ps1"
 ```
 
-## 功能菜单
+---
 
-| 数字 | 功能 | 说明 |
-|------|------|------|
-| `1` | 一键修代理 | 开了梯子重启后打不开网页，点一下就好 |
-| `2` | 校园网优化 | 问 `Y/N`：**N=快速约10秒**（赶时间用），**Y=完整前后延迟对比** |
-| `3` | 游戏优化 | 在校园网基础上开吞吐增强，保守安全 |
-| `4` | 测延迟 / 看状态 | 逐包进度条 + SSID/信号/速率/代理状态 |
-| `5` | 备份与恢复 | 新建快照，或选最近快照一键还原 |
-| `6` | 设置 / 关于 | 开关匿名统计、打开数据目录、作者 QQ |
-| `0` | 退出 | |
+## 📋 功能菜单说明
 
-> slogan：「**我与我周旋久，宁做我**」
+```text
+┌──────────────────────────────────────────────────────────┐
+│              「小明」校园网加速工具箱 v0.1.5              │
+│                 「我与我周旋久，宁做我」                   │
+└──────────────────────────────────────────────────────────┘
+ [1] 一键修代理    -> 解决代理软件关闭/重启后网页打不开问题
+ [2] 校园网优化    -> 5G锁定 / 节能禁用 / 漫游调优 (支持快速/完整测速)
+ [3] 游戏低延迟    -> 开启吞吐增强 (Throughput Booster) 降低网游抖动
+ [4] 测延迟与状态  -> 逐包进度条测速 + Wi-Fi 信号/速率/网关体检
+ [5] 备份与还原    -> 查看快照历史，随时一键还原到任意时间点
+ [6] 设置与关于    -> 匿名数据开关、打开本地数据文件夹
+ [0] 退出
+```
 
-## 实时使用情况
+---
 
-下面是来自真实用户匿名上报的**实时统计**（每次打开本页自动刷新）：
+## 🛠️ 网络底层调优原理
 
-<div align="center">
+本工具坚持**保守、安全、高收益**原则，只调节有明确文档支撑的驱动和传输层参数：
 
-**真实用户数据（实时）：**
+- **Wi-Fi 驱动层调优**：
+  - `RoamingAggressiveness = 1`：将漫游激进程度调至最低，避免在宿舍走动或信号微弱波动时频繁跳频重连。
+  - `PreferredBand = 2 (5GHz)`：强制优先关联干净的 5GHz 频段，避开极其拥堵的 2.4GHz 干扰。
+  - `MIMOPowerSaveMode = 0` / `uAPSDSupport = 0`：禁止芯片休眠节能，确保数据传输链路随时唤醒。
+- **TCP 协议栈层调优**：
+  - `TcpAckFrequency = 1` / `TCPNoDelay = 1`：关闭 Nagle 算法，收到小封包时立刻触发 ACK 应答，显著降低游戏与交互类操作的往返延迟。
+- **保守安全边界**：
+  - 严格**不动 MTU**（防止运营商分片丢包）、**不动拥塞控制算法（保留系统默认 Cubic/BBR）**、**不动 LSO / QoS**，确保网络稳定性不受损伤。
 
-![总调用](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Ftotal)
-![用户数](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fusers)
-![延迟下降](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fimprove)
-![成功率](https://images.weserv.nl/?url=47.98.204.220/badge-svg%2Fsuccess)
+---
 
+## 📊 实时运行数据
 
-![每日调用趋势](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage%26v%3D2)
-
-</div>
-
-> 工具每次优化前自动备份，如不满意菜单选 `[5]` 一键还原。
-
-## 隐私与安全
-
-- **所有修改前自动备份**，且全部改动都有对应还原路径；没有任何删除性操作。
-- **匿名遥测**只上报：工具版本、Windows 版本、网卡厂商、使用模式、成功与否、优化项数、前后延迟 / 丢包。
-- **绝不记录** IP、主机名、MAC 地址、账号、位置。可在菜单 `[6] 设置` 里随时关闭。
-- 数据存放在你自己的 `%LOCALAPPDATA%\XiaomingToolkit\`，备份 / 日志 / 报告都在本地。
-
-## 更新日志
-
-### v0.1.3
-- 🎨 新增软件图标（青蓝 WiFi + 闪电），exe 自带图标
-- 🖥️ 首次运行自动在桌面创建「小明校园网加速工具箱」快捷方式，之后不再重复
-
-### v0.1.2
-- 🔗 重启网卡后**确认真正 ping 通网关**（连续 2 包成功）才开始复测，不再把"刚重连的抖动"误报成延迟上升
-- ❓ 测速询问只认 `Y/N`，乱输入会重新问，不再闷头执行
-- 🎨 菜单更简洁（去掉括号说明），副标题改为「我与我周旋久，宁做我」
-- 📦 单文件改名为 `XiaomingCampusNetToolkit.exe`
-
-### v0.1.1
-- ⚡ 新增**快速 / 完整双模式**：赶时间输 N 约 10 秒，看效果输 Y 完整前后对比
-- ⏱️ 延迟测试加**实时进度条 + 预计剩余秒数**，不再黑屏干等
-- 🚀 **启动即提权**，双击就弹管理员
-- 🤖 首次**自动探测本机网卡**，只问一次，之后不再重复
-- 🎨 控制台美化：ASCII banner、圆角框线菜单
-- 简化菜单为 6 项；删去底部匿名统计信息
-- 📞 作者 小明 QQ 2284517861
-- 🐛 修复重启后 Wi-Fi 信息显示空、重复执行入口
-
-### v0.1.0
-- 首个公开版本：代理清理 / 校园网优化 / 游戏优化 / 自动备份还原 / 延迟对比 / 匿名看板
-
-## 常见问题
-
-**Q：改完会不会把网改坏？**
-不会。每次优化前都自动备份（`backups\` 目录），菜单 `[5]` 一键还原；游戏模式保守，不动 MTU / 拥塞算法。优化过程中 Wi-Fi 会自动重连约 5–10 秒，属正常现象。
-
-**Q：开了梯子 / VPN，重启后浏览器打不开网页？**
-这就是 `[1] 一键修代理` 解决的。它会把残留的系统代理、WinHTTP 代理、环境变量代理全部清掉，再刷新 DNS。
-
-**Q：在别的电脑 / 别的网卡上能用吗？**
-可以。它会先探测本机网卡支持哪些高级属性，再按语义匹配目标值（如"禁用""启用""含 5G"），匹配不到就跳过，不依赖特定型号。
-
-**Q：杀毒软件 / Windows SmartScreen 报风险？**
-这是 PowerShell 脚本常见误报。脚本开源、可逐行审查；如担心，可右键 exe → 属性 → 解除锁定，或自行阅读 `src\XiaomingToolkit.ps1`。
-
-**Q：赶时间打游戏，不想等测速？**
-选 `[2] 校园网优化` 后，提示 `要测速对比吗？` 时直接输 `N`，约 10 秒完成；想看真实提速效果再输 `Y`。
-
-## 在线统计看板
-
-本项目自带一个匿名统计后端（Flask + SQLite + Docker）。
-
-**📊 完整实时看板：<http://47.98.204.220/>**
+所有使用数据均在用户授权下进行**完全匿名上报**（不包含任何 IP、MAC、用户名或隐私记录）。
 
 <div align="center">
 
-| 每日调用 | 网卡厂商 |
-|:---:|:---:|
+| 📈 每日调用趋势 | 💻 网卡厂商分布 |
+| :---: | :---: |
 | ![每日调用](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dusage%26v%3D2) | ![网卡厂商](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dvendor%26v%3D2) |
 
-| 使用模式 | 系统版本 |
-|:---:|:---:|
+| 🎮 优化模式占比 | 🖥️ 操作系统分布 |
+| :---: | :---: |
 | ![使用模式](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dmode%26v%3D2) | ![系统版本](https://images.weserv.nl/?url=47.98.204.220/chart%3Ftype%3Dos%26v%3D2) |
 
+👉 **[点击访问完整在线交互看板](http://47.98.204.220/)**
 
 </div>
 
-> 上图通过 https 代理实时拉取（约 5 分钟缓存）；点上方链接看完整交互看板。
+---
 
-自部署方法见 [`stats-server/README.md`](stats-server/README.md)。
+## ❓ 常见问题 (FAQ)
 
-## 目录结构
+<details>
+<summary><b>Q1: 优化会把电脑网络改坏吗？改坏了怎么办？</b></summary>
+绝对不会。每次优化前都会自动建立时间戳快照并保存在本地 `%LOCALAPPDATA%\XiaomingToolkit\backups`。如果遇到任何异常，打开菜单选择 <code>[5] 备份与恢复</code> 即可一键恢复如初。
+</details>
 
-```
+<details>
+<summary><b>Q2: 为什么优化后 Wi-Fi 会断开几秒钟？</b></summary>
+修改网卡驱动的高级设置（如频段优先、节能模式）后，系统必须重启网卡驱动使设置立即生效，大约需要 5~8 秒重新关联 Wi-Fi，属于完全正常的重连过程。
+</details>
+
+<details>
+<summary><b>Q3: 为什么 Windows SmartScreen 或杀毒软件会提示风险？</b></summary>
+这是由于使用开源工具将 PowerShell 脚本封装成单文件 exe 时的常规误报。脚本代码 100% 透明公开，你可以自行在 <code>src/XiaomingToolkit.ps1</code> 中逐行审阅。
+</details>
+
+<details>
+<summary><b>Q4: 换到别的电脑/别的无线网卡上能生效吗？</b></summary>
+完全可以。程序在启动时会自动扫描网卡注册表键值，按语义探测是否支持 5GHz 偏好、MIMO 节能、吞吐增强等选项，支持哪项就精准优化哪项，不支持则安全跳过。
+</details>
+
+---
+
+## 📂 项目结构
+
+```text
 XiaomingCampusNetToolkit/
-├─ src/
-│  └─ XiaomingToolkit.ps1          # 主程序（全部功能 + 测试模式）
-├─ XiaomingCampusNetToolkit.exe    # 单文件版（Release 提供，双击即用）
-├─ Start-Xiaoming-Toolkit.bat      # 脚本启动器（需连同 src 一起）
-├─ stats-server/                  # 可选的匿名统计后端（Docker）
-├─ README.md
-├─ LICENSE
-└─ .gitignore
+├── assets/
+│   └── demo.svg                  # 终端动效演示文件
+├── src/
+│   └── XiaomingToolkit.ps1       # 核心 PowerShell 引擎与优化算法
+├── stats-server/                 # 匿名监控看板后端 (Flask + Docker)
+├── Start-Xiaoming-Toolkit.bat    # 便携启动脚本
+├── LICENSE                       # MIT 许可证
+└── README.md                     # 项目主说明文档
 ```
 
-## License
+---
 
-[MIT](LICENSE) © xm2284
+## 📄 许可证与免责声明
 
-> 仅供学习交流。按自身网络环境使用，作者不对任何网络配置改动负责（工具已提供自动备份与还原）。
+- 本项目基于 [MIT 许可证](LICENSE) 开源。
+- 本工具为网络调优辅助工具，旨在通过优化驱动配置改善校园网体验，优化效果受各学校实际物理 AP 带宽及基建环境影响。

@@ -1,0 +1,36 @@
+name: Mirror to Gitee
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create Gitee repo if missing
+        shell: bash
+        run: |
+          curl -sS -X POST "https://gitee.com/api/v5/user/repos" \
+            -H "Content-Type: application/json" \
+            -d "{\"access_token\":\"${{ secrets.GITEE_TOKEN }}\",\"name\":\"${{ github.event.repository.name }}\",\"auto_init\":false,\"private\":false}" \
+            --max-time 30 >/dev/null 2>&1 || echo "WARN: create skipped (repo may already exist)"
+
+      - name: Mirror push to Gitee
+        shell: bash
+        run: |
+          REPO="${{ github.event.repository.name }}"
+          USER="${{ secrets.GITEE_USERNAME }}"
+          URL="https://${USER}:${{ secrets.GITEE_TOKEN }}@gitee.com/${USER}/${REPO}.git"
+          git remote remove origin 2>/dev/null || true
+          git remote add gitee "$URL"
+          git push --mirror gitee

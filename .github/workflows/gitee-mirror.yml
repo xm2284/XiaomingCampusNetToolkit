@@ -44,8 +44,8 @@ jobs:
           REPO_DESC: ${{ github.event.repository.description }}
           REPO_HOME: ${{ github.event.repository.homepage }}
         run: |
-          BODY=$(jq -n --arg t "$GITEE_TOKEN" --arg d "$REPO_DESC" --arg h "$REPO_HOME" \
-            '{access_token:$t, description:$d, homepage:$h}')
+          BODY=$(jq -n --arg t "$GITEE_TOKEN" --arg n "$REPO_NAME" --arg d "$REPO_DESC" --arg h "$REPO_HOME" \
+            '{access_token:$t, name:$n, description:$d, homepage:$h}')
           echo "Syncing Gitee description: ${REPO_DESC}"
           curl -sS -X PATCH "https://gitee.com/api/v5/repos/${GITEE_USER}/${REPO_NAME}" \
             -H "Content-Type: application/json" -d "$BODY"

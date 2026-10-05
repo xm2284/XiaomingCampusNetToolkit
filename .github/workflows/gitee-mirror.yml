@@ -33,7 +33,24 @@ jobs:
           URL="https://${USER}:${{ secrets.GITEE_TOKEN }}@gitee.com/${USER}/${REPO}.git"
           git remote remove origin 2>/dev/null || true
           git remote add gitee "$URL"
-          git push --mirror gitee
+          git config --global http.postBuffer 524288000
+          git config --global http.lowSpeedLimit 0
+          git config --global http.lowSpeedTime 999999
+          ok=0
+          for i in 1 2 3 4 5; do
+            echo "=== Mirror push attempt $i ==="
+            if git push --force --prune gitee \
+                 "+refs/heads/*:refs/heads/*" "+refs/tags/*:refs/tags/*"; then
+              ok=1
+              break
+            fi
+            echo "attempt $i failed, retrying in 15s ..."
+            sleep 15
+          done
+          if [ "$ok" != "1" ]; then
+            echo "::error::Mirror push failed after 5 attempts"
+            exit 1
+          fi
 
       - name: Sync repo metadata (About/description) to Gitee
         shell: bash

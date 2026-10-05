@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" width="980" height="560">
+  <defs>
+    <style>
+      @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+      @keyframes step1 { 0% { opacity: 0; } 4% { opacity: 1; } 100% { opacity: 1; } }
+      @keyframes step2 { 0%, 7% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 1; } }
+      @keyframes step3 { 0%, 18% { opacity: 0; } 24% { opacity: 1; } 100% { opacity: 1; } }
+      @keyframes step4 { 0%, 32% { opacity: 0; } 38% { opacity: 1; } 100% { opacity: 1; } }
+      @keyframes step5 { 0%, 48% { opacity: 0; } 54% { opacity: 1; } 100% { opacity: 1; } }
+      @keyframes step6 { 0%, 65% { opacity: 0; } 72% { opacity: 1; } 100% { opacity: 1; } }
+      @keyframes step7 { 0%, 82% { opacity: 0; } 88% { opacity: 1; } 100% { opacity: 1; } }
+
+      .term-bg { fill: #0c1017; stroke: #30363d; stroke-width: 1.5; rx: 12px; }
+      .title-bar { fill: #161b22; }
+      .btn-red { fill: #ff5f56; }
+      .btn-yellow { fill: #ffbd2e; }
+      .btn-green { fill: #27c93f; }
+      .title-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; font-size: 13px; font-weight: 500; }
+      
+      .t { font-family: "Cascadia Code", "Fira Code", Consolas, Monaco, "Courier New", monospace; font-size: 13.5px; }
+      .c-dim { fill: #6e7681; }
+      .c-white { fill: #e6edf3; }
+      .c-green { fill: #3fb950; font-weight: 600; }
+      .c-cyan { fill: #58a6ff; font-weight: 600; }
+      .c-yellow { fill: #d29922; }
+      .c-purple { fill: #bc8cff; }
+      .c-red { fill: #f85149; }
+      .cursor { fill: #58a6ff; animation: blink 1s infinite; }
+
+      .s1 { animation: step1 10s infinite; }
+      .s2 { animation: step2 10s infinite; }
+      .s3 { animation: step3 10s infinite; }
+      .s4 { animation: step4 10s infinite; }
+      .s5 { animation: step5 10s infinite; }
+      .s6 { animation: step6 10s infinite; }
+      .s7 { animation: step7 10s infinite; }
+    </style>
+  </defs>
+
+  <!-- Container -->
+  <rect x="10" y="10" width="960" height="540" class="term-bg" />
+  
+  <!-- Titlebar -->
+  <path d="M 10,22 Q 10,10 22,10 L 958,10 Q 970,10 970,22 L 970,48 L 10,48 Z" class="title-bar" />
+  <circle cx="34" cy="29" r="6" class="btn-red" />
+  <circle cx="54" cy="29" r="6" class="btn-yellow" />
+  <circle cx="74" cy="29" r="6" class="btn-green" />
+  <text x="490" y="33" text-anchor="middle" class="title-text">Administrator: Windows PowerShell — XiaomingCampusNetToolkit</text>
+
+  <!-- Terminal Body -->
+  <g transform="translate(36, 82)">
+    <!-- Command Prompt -->
+    <g class="s1">
+      <text y="0" class="t c-cyan">PS C:\Windows\System32&gt;</text>
+      <text x="200" y="0" class="t c-white">.\XiaomingCampusNetToolkit.bat</text>
+    </g>
+
+    <!-- Header Banner -->
+    <g class="s2" transform="translate(0, 28)">
+      <text y="0" class="t c-cyan">========================================================================</text>
+      <text y="20" class="t c-purple">        「小明」校园网加速工具箱 v0.1.5 (自动提权 · 可逆备份)</text>
+      <text y="40" class="t c-cyan">========================================================================</text>
+      <text y="62" class="t c-dim">[环境检测] 网卡: Intel(R) Wi-Fi 6 AX201 160MHz | 频段: 5GHz (i-Star)</text>
+    </g>
+
+    <!-- Menu Display -->
+    <g class="s3" transform="translate(0, 115)">
+      <text y="0" class="t c-yellow">[1] 一键清理代理残留 (解除断网打不开网页)</text>
+      <text y="20" class="t c-green">[2] 校园网优化模式 (锁定5G频段 / 禁用MIMO节电 / 关Nagle低延迟)</text>
+      <text y="40" class="t c-cyan">[3] 游戏低延迟模式 (吞吐增强 Throughput Booster + 防跳ping)</text>
+      <text y="60" class="t c-white">[4] 一键还原所有改动 (从最新快照完整恢复)</text>
+      <text y="80" class="t c-dim">[5] 网络健康度体检 | [0] 退出</text>
+      <text y="106" class="t c-white">请输入选项 [0-5]: </text>
+      <text x="145" y="106" class="t c-green">3</text>
+    </g>
+
+    <!-- Auto Backup & Apply -->
+    <g class="s4" transform="translate(0, 246)">
+      <text y="0" class="t c-cyan">🛡️ 正在创建系统网络快照...</text>
+      <text x="240" y="0" class="t c-dim">已保存至 %LOCALAPPDATA%\XiaomingToolkit\backups</text>
+      <text y="22" class="t c-green">✔ 网卡参数调优: RoamingAggressiveness=1, ThroughputBoosterEnabled=1</text>
+      <text y="42" class="t c-green">✔ TCP注册表优化: TcpAckFrequency=1, TCPNoDelay=1 (Nagle算法已关闭)</text>
+    </g>
+
+    <!-- Benchmark Progress -->
+    <g class="s5" transform="translate(0, 316)">
+      <text y="0" class="t c-yellow">⏱️ 正在进行 20 包网络真实延迟与抖动对照测试...</text>
+      <text y="22" class="t c-cyan">测试进度: [██████████████████████████████] 20/20 (DNS: 223.5.5.5)</text>
+    </g>
+
+    <!-- Benchmark Result -->
+    <g class="s6" transform="translate(0, 368)">
+      <text y="0" class="t c-white">──────────────────────────── 对比测试报告 ────────────────────────────</text>
+      <text y="22" class="t c-dim">优化前延迟:</text>
+      <text x="95" y="22" class="t c-red">Min 48ms / Avg 79ms / Max 240ms</text>
+      <text x="380" y="22" class="t c-dim">| 抖动: ±45ms (频频跳ping)</text>
+
+      <text y="44" class="t c-dim">优化后延迟:</text>
+      <text x="95" y="44" class="t c-green">Min 21ms / Avg 28ms / Max 36ms</text>
+      <text x="380" y="44" class="t c-dim">| 抖动: ±3ms (极稳定)</text>
+
+      <text y="66" class="t c-purple">⚡ 综合延迟下降: 64.5%  |  丢包率: 0.0%  |  状态: 优化生效成功！</text>
+    </g>
+
+    <!-- Prompt cursor -->
+    <g class="s7" transform="translate(0, 460)">
+      <text y="0" class="t c-green">按任意键返回主菜单...</text>
+      <rect x="180" y="-12" width="8" height="15" class="cursor" />
+    </g>
+  </g>
+</svg>
